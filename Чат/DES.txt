@@ -1,0 +1,68 @@
+public Message Shifr()  {
+         //12345678
+         String password = "";
+         try (FileReader reader = new FileReader("password.txt")) {
+             int c;
+             while ((c = reader.read()) != -1) {
+
+                  password+= (char) c;
+                 // System.out.print((char)c);
+             }
+         } catch (IOException ex) {
+
+             System.out.println(ex.getMessage());
+         }
+         try {
+             String message = this.data;
+             byte[] keyBytes = password.getBytes("UTF-8");
+             DESKeySpec keySpec = new DESKeySpec(keyBytes);
+             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+             SecretKey key = keyFactory.generateSecret(keySpec);
+             Cipher encryptCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+             encryptCipher.init(Cipher.ENCRYPT_MODE, key);
+             byte[] encryptedMessage = encryptCipher.doFinal(message.getBytes("UTF-8"));
+             String encryptedMessageString = Base64.getEncoder().encodeToString(encryptedMessage);
+             this.data = encryptedMessageString;
+         }
+         catch (Exception e){
+
+         }
+         return this;
+    }
+
+ public  Message Rashifr()  {
+        //12345678
+        String password = "";
+        try (FileReader reader = new FileReader("password.txt")) {
+        int c;
+            while ((c = reader.read()) != -1) {
+
+            password+= (char) c;
+            // System.out.print((char)c);
+            }
+        }
+        catch (IOException ex) {
+
+        System.out.println(ex.getMessage());
+        }
+        try {
+            char[] pass = password.toCharArray();
+            String line = this.getData();
+            String line1 = line.substring(line.indexOf(':')+2);
+            byte[] keyBytes = password.getBytes("UTF-8");
+            DESKeySpec keySpec = new DESKeySpec(keyBytes);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKey key = keyFactory.generateSecret(keySpec);
+            Cipher decryptCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            decryptCipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] decryptedResponse = decryptCipher.doFinal(Base64.getDecoder().decode(line1));
+            String decryptedResponseString = new String(decryptedResponse, "UTF-8");
+            this.data =  line.substring(0, line.indexOf(':')+2) + decryptedResponseString;
+        }
+        catch (Exception e){
+
+        }
+        return this;
+
+
+    }
